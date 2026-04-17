@@ -1,0 +1,503 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .root {
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    color: #e2e4ec;
+    background: #0d0f14;
+    min-height: 100vh;
+  }
+
+  .topbar {
+    background: #13161e;
+    border-bottom: 1px solid #2a2f3d;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+  }
+
+  .logo { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 20px; letter-spacing: 2px; color: #e8a838; text-transform: uppercase; }
+  .logo span { color: #e2e4ec; }
+
+  .live-event-badge {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(232,90,90,0.1); border: 1px solid rgba(232,90,90,0.3);
+    padding: 4px 12px; border-radius: 3px;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700;
+    letter-spacing: 1px; color: #e85a5a; text-transform: uppercase;
+  }
+
+  .live-dot { width: 6px; height: 6px; background: #e85a5a; border-radius: 50%; animation: pulse 1.4s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.2; } }
+
+  .main { max-width: 1100px; margin: 0 auto; padding: 16px 20px; display: grid; grid-template-columns: 1fr 300px; gap: 16px; }
+
+  .event-header {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #1a1e2a 0%, #13161e 100%);
+    border: 1px solid #2a2f3d;
+    border-top: 3px solid #e8a838;
+    border-radius: 4px;
+    padding: 14px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .event-title-wrap { display: flex; align-items: center; gap: 12px; }
+  .event-icon { font-size: 28px; }
+  .event-name { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+  .event-sub { font-size: 12px; color: #7a8299; margin-top: 2px; }
+
+  .event-stats { display: flex; gap: 20px; }
+  .stat { text-align: center; }
+  .stat-val { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: #e8a838; }
+  .stat-lbl { font-size: 10px; color: #7a8299; letter-spacing: 1px; text-transform: uppercase; }
+
+  .section-hdr {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase; color: #7a8299;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .section-hdr::after { content:''; flex:1; height:1px; background:#2a2f3d; }
+
+  .match-card {
+    background: #1a1e2a; border: 1px solid #2a2f3d; border-radius: 3px;
+    padding: 12px 14px; margin-bottom: 8px; cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .match-card:hover { border-color: #e8a838; }
+  .match-card.qf { border-left: 3px solid #e8a838; }
+  .match-card.sf { border-left: 3px solid #4a9eff; }
+  .match-card.gf { border-left: 3px solid #e85a5a; }
+
+  .match-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .stage-tag { font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+  .tag-qf { color:#e8a838; } .tag-sf { color:#4a9eff; } .tag-gf { color:#e85a5a; }
+
+  .time-tag { font-size:11px; color:#7a8299; background:#13161e; padding:2px 8px; border-radius:2px; }
+
+  .teams-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+
+  .team { display:flex; align-items:center; gap:9px; flex:1; min-width:0; }
+  .team.right { flex-direction:row-reverse; }
+
+  .tlogo {
+    width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:'Barlow Condensed',sans-serif; font-size:10px; font-weight:700; color:#fff; flex-shrink:0;
+  }
+
+  .tname { font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .trank { font-size:10px; color:#7a8299; }
+
+  .vs-zone { text-align:center; flex-shrink:0; min-width:72px; }
+  .vs-txt { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:700; color:#2a2f3d; }
+  .bo-txt { font-size:10px; color:#7a8299; }
+
+  .odds-row { display:flex; gap:4px; margin-top:10px; }
+  .odd-btn {
+    flex:1; background:#13161e; border:1px solid #2a2f3d; border-radius:3px;
+    padding:6px 4px; text-align:center; cursor:default;
+    transition:border-color 0.2s;
+  }
+  .odd-btn.fav { border-color: rgba(232,168,56,0.4); }
+  .odd-name { font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:#7a8299; }
+  .odd-val { font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:700; color:#e2e4ec; margin-top:1px; }
+  .odd-pct { font-size:10px; color:#e8a838; margin-top:1px; }
+
+  .ai-row {
+    background: rgba(232,168,56,0.04); border:1px solid rgba(232,168,56,0.15); border-radius:3px;
+    padding:8px 10px; margin-top:8px; display:flex; gap:8px;
+  }
+  .ai-ic { font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700; color:#e8a838; flex-shrink:0; margin-top:1px; }
+  .ai-msg { font-size:12px; color:#9aa0b8; line-height:1.5; }
+  .ai-msg strong { color:#e8a838; font-weight:600; }
+
+  .sidebar {}
+
+  .ai-panel { background:#1a1e2a; border:1px solid rgba(232,168,56,0.2); border-radius:3px; overflow:hidden; margin-bottom:12px; }
+  .ai-panel-hdr { background:rgba(232,168,56,0.06); border-bottom:1px solid rgba(232,168,56,0.15); padding:10px 14px; display:flex; align-items:center; gap:6px; }
+  .ai-panel-title { font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700; letter-spacing:1.5px; color:#e8a838; text-transform:uppercase; }
+  .ai-panel-body { padding:12px 14px; }
+
+  .loading-state { text-align:center; color:#7a8299; font-size:13px; padding:20px 0; }
+  .loading-spinner { display:inline-block; width:16px; height:16px; border:2px solid #2a2f3d; border-top-color:#e8a838; border-radius:50%; animation:spin 0.8s linear infinite; margin-right:8px; vertical-align:middle; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  .analysis-text { font-size:13px; color:#9aa0b8; line-height:1.7; }
+  .analysis-text strong { color:#e2e4ec; font-weight:600; }
+
+  .ask-btn {
+    width:100%; background:rgba(232,168,56,0.08); border:1px solid rgba(232,168,56,0.25);
+    color:#e8a838; font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700;
+    letter-spacing:1px; text-transform:uppercase; padding:9px; border-radius:3px; cursor:pointer;
+    margin-top:12px; transition:background 0.2s;
+  }
+  .ask-btn:hover { background:rgba(232,168,56,0.15); }
+
+  .bracket-card { background:#1a1e2a; border:1px solid #2a2f3d; border-radius:3px; padding:12px 14px; margin-bottom:8px; }
+  .bracket-title { font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#7a8299; margin-bottom:10px; }
+  .bracket-match { display:flex; align-items:center; justify-content:space-between; padding:5px 0; border-bottom:1px solid #13161e; font-size:13px; }
+  .bracket-match:last-child { border-bottom:none; }
+  .bm-team { font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.5px; }
+  .bm-odds { font-size:12px; color:#e8a838; font-weight:600; font-family:'Barlow Condensed',sans-serif; }
+
+  .winner-odds-card { background:#1a1e2a; border:1px solid #2a2f3d; border-radius:3px; padding:12px 14px; margin-bottom:8px; }
+  .wo-row { display:flex; align-items:center; justify-content:space-between; padding:5px 0; border-bottom:1px solid #13161e; }
+  .wo-row:last-child { border-bottom:none; }
+  .wo-team { display:flex; align-items:center; gap:7px; }
+  .wo-tname { font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.5px; }
+  .wo-bar-wrap { flex:1; height:3px; background:#13161e; border-radius:2px; margin:0 10px; }
+  .wo-bar { height:100%; border-radius:2px; }
+  .wo-pct { font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:700; color:#e8a838; min-width:36px; text-align:right; }
+
+  @media (max-width: 680px) {
+    .main { grid-template-columns:1fr; }
+    .event-stats { display:none; }
+  }
+</style>
+
+<div class="root">
+  <div class="topbar">
+    <div class="logo">FRAG<span>HUB</span></div>
+    <div class="live-event-badge"><div class="live-dot"></div> IEM Rio 2026 · Playoffs</div>
+  </div>
+
+  <div class="main">
+    <div class="event-header">
+      <div class="event-title-wrap">
+        <div class="event-icon">🏆</div>
+        <div>
+          <div class="event-name">IEM Rio 2026</div>
+          <div class="event-sub">Intel Extreme Masters · Farmasi Arena, Rio de Janeiro · 13–19 Abr 2026</div>
+        </div>
+      </div>
+      <div class="event-stats">
+        <div class="stat"><div class="stat-val">$1M</div><div class="stat-lbl">Prize Pool</div></div>
+        <div class="stat"><div class="stat-val">16</div><div class="stat-lbl">Times</div></div>
+        <div class="stat"><div class="stat-val">S-Tier</div><div class="stat-lbl">Nível</div></div>
+        <div class="stat"><div class="stat-val">15k</div><div class="stat-lbl">Capacidade</div></div>
+      </div>
+    </div>
+
+    <div class="left-col">
+      <div class="section-hdr">Quartas de Final — 17 Abr</div>
+
+      <div class="match-card qf">
+        <div class="match-top">
+          <span class="stage-tag tag-qf">🏆 IEM Rio 2026 · Quartas · Bo3</span>
+          <span class="time-tag">17 Abr · 12:00 BRT</span>
+        </div>
+        <div class="teams-row">
+          <div class="team">
+            <div class="tlogo" style="background:#1a1e3a;">SPT</div>
+            <div>
+              <div class="tname">Team Spirit</div>
+              <div class="trank">#4 HLTV</div>
+            </div>
+          </div>
+          <div class="vs-zone">
+            <div class="vs-txt">VS</div>
+            <div class="bo-txt">Bo3</div>
+          </div>
+          <div class="team right">
+            <div class="tlogo" style="background:#1e1a3a;">MOUZ</div>
+            <div style="text-align:right">
+              <div class="tname">MOUZ</div>
+              <div class="trank">#5 HLTV</div>
+            </div>
+          </div>
+        </div>
+        <div class="odds-row">
+          <div class="odd-btn fav">
+            <div class="odd-name">Spirit</div>
+            <div class="odd-val">1.62</div>
+            <div class="odd-pct">62%</div>
+          </div>
+          <div class="odd-btn">
+            <div class="odd-name" style="color:#4a9eff">MOUZ</div>
+            <div class="odd-val">2.35</div>
+            <div class="odd-pct" style="color:#4a9eff">38%</div>
+          </div>
+        </div>
+        <div class="ai-row">
+          <div class="ai-ic">✦ IA</div>
+          <div class="ai-msg">Spirit favorito com <strong>62% de chance</strong>. MOUZ caiu para o lower bracket após derrota para Falcons. Spirit vence <strong>Nuke e Mirage em 70%+</strong> dos casos este ano.</div>
+        </div>
+      </div>
+
+      <div class="match-card qf">
+        <div class="match-top">
+          <span class="stage-tag tag-qf">🏆 IEM Rio 2026 · Quartas · Bo3</span>
+          <span class="time-tag">17 Abr · 15:15 BRT</span>
+        </div>
+        <div class="teams-row">
+          <div class="team">
+            <div class="tlogo" style="background:#1e1a10;">VITA</div>
+            <div>
+              <div class="tname">Team Vitality</div>
+              <div class="trank">#1 HLTV · #1 VRS</div>
+            </div>
+          </div>
+          <div class="vs-zone">
+            <div class="vs-txt">VS</div>
+            <div class="bo-txt">Bo3</div>
+          </div>
+          <div class="team right">
+            <div class="tlogo" style="background:#1a2a1e;">NV</div>
+            <div style="text-align:right">
+              <div class="tname">Natus Vincere</div>
+              <div class="trank">#3 HLTV</div>
+            </div>
+          </div>
+        </div>
+        <div class="odds-row">
+          <div class="odd-btn fav">
+            <div class="odd-name">Vitality</div>
+            <div class="odd-val">1.45</div>
+            <div class="odd-pct">69%</div>
+          </div>
+          <div class="odd-btn">
+            <div class="odd-name" style="color:#4a9eff">NaVi</div>
+            <div class="odd-val">2.80</div>
+            <div class="odd-pct" style="color:#4a9eff">31%</div>
+          </div>
+        </div>
+        <div class="ai-row">
+          <div class="ai-ic">✦ IA</div>
+          <div class="ai-msg">Revanche da Grand Final do BLAST Open Spring 2026 — onde <strong>Vitality dominou NaVi</strong>. Vitality busca o 4º troféu consecutivo. ZywOo em forma histórica.</div>
+        </div>
+      </div>
+
+      <div class="section-hdr" style="margin-top:16px;">Semifinais — 18 Abr</div>
+
+      <div class="match-card sf">
+        <div class="match-top">
+          <span class="stage-tag tag-sf">🔵 IEM Rio 2026 · Semi · Bo3</span>
+          <span class="time-tag">18 Abr · 12:00 BRT</span>
+        </div>
+        <div class="teams-row">
+          <div class="team">
+            <div class="tlogo" style="background:#1e1e2e;">FAL</div>
+            <div>
+              <div class="tname">Team Falcons</div>
+              <div class="trank">#2 HLTV · Vaga Direta</div>
+            </div>
+          </div>
+          <div class="vs-zone">
+            <div class="vs-txt">VS</div>
+            <div class="bo-txt">Bo3</div>
+          </div>
+          <div class="team right">
+            <div class="tlogo" style="background:#131a13;">WIN QF</div>
+            <div style="text-align:right">
+              <div class="tname">Winner QF1</div>
+              <div class="trank">Spirit ou MOUZ</div>
+            </div>
+          </div>
+        </div>
+        <div class="odds-row">
+          <div class="odd-btn fav">
+            <div class="odd-name">Falcons</div>
+            <div class="odd-val">—</div>
+            <div class="odd-pct">Favorito</div>
+          </div>
+          <div class="odd-btn">
+            <div class="odd-name" style="color:#4a9eff">TBD</div>
+            <div class="odd-val">—</div>
+            <div class="odd-pct" style="color:#4a9eff">Azarão</div>
+          </div>
+        </div>
+        <div class="ai-row">
+          <div class="ai-ic">✦ IA</div>
+          <div class="ai-msg">Falcons surpreendeu Vitality 2-1 na fase de grupos — <strong>maior resultado do torneio</strong> até agora. Se Spirit avançar, confronto vai ser explosivo.</div>
+        </div>
+      </div>
+
+      <div class="match-card sf">
+        <div class="match-top">
+          <span class="stage-tag tag-sf">🔵 IEM Rio 2026 · Semi · Bo3</span>
+          <span class="time-tag">18 Abr · 15:15 BRT</span>
+        </div>
+        <div class="teams-row">
+          <div class="team">
+            <div class="tlogo" style="background:#1a130d;">FUR</div>
+            <div>
+              <div class="tname">FURIA</div>
+              <div class="trank">#6 HLTV · Vaga Direta 🇧🇷</div>
+            </div>
+          </div>
+          <div class="vs-zone">
+            <div class="vs-txt">VS</div>
+            <div class="bo-txt">Bo3</div>
+          </div>
+          <div class="team right">
+            <div class="tlogo" style="background:#131a1e;">WIN QF</div>
+            <div style="text-align:right">
+              <div class="tname">Winner QF2</div>
+              <div class="trank">Vitality ou NaVi</div>
+            </div>
+          </div>
+        </div>
+        <div class="odds-row">
+          <div class="odd-btn">
+            <div class="odd-name">FURIA</div>
+            <div class="odd-val">—</div>
+            <div class="odd-pct">Casa 🏠</div>
+          </div>
+          <div class="odd-btn fav">
+            <div class="odd-name" style="color:#e8a838">TBD</div>
+            <div class="odd-val">—</div>
+            <div class="odd-pct" style="color:#e8a838">Favorito</div>
+          </div>
+        </div>
+        <div class="ai-row">
+          <div class="ai-ic">✦ IA</div>
+          <div class="ai-msg">FURIA jogando em casa com 15.000 torcedores — <strong>fator psicológico enorme</strong>. Dominaram MOUZ 2-0 na fase de grupos. Virada real possível contra qualquer adversário.</div>
+        </div>
+      </div>
+
+      <div class="section-hdr" style="margin-top:16px;">Grand Final — 19 Abr</div>
+
+      <div class="match-card gf">
+        <div class="match-top">
+          <span class="stage-tag tag-gf">🔴 IEM Rio 2026 · Grand Final · Bo5</span>
+          <span class="time-tag">19 Abr · 14:00 BRT</span>
+        </div>
+        <div class="teams-row">
+          <div class="team">
+            <div class="tlogo" style="background:#2a1a1a;">TBD</div>
+            <div>
+              <div class="tname">Winner SF1</div>
+              <div class="trank">A definir</div>
+            </div>
+          </div>
+          <div class="vs-zone">
+            <div class="vs-txt">VS</div>
+            <div class="bo-txt">Bo5</div>
+          </div>
+          <div class="team right">
+            <div class="tlogo" style="background:#1a1a2a;">TBD</div>
+            <div style="text-align:right">
+              <div class="tname">Winner SF2</div>
+              <div class="trank">A definir</div>
+            </div>
+          </div>
+        </div>
+        <div class="ai-row">
+          <div class="ai-ic">✦ IA</div>
+          <div class="ai-msg">Grande Final Bo5 em <strong>14h BRT · Farmasi Arena</strong>. Prêmio: $250,000 para o campeão. Vitality busca 4º título seguido — façanha histórica no CS2.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="ai-panel">
+        <div class="ai-panel-hdr">
+          <span style="color:#e8a838;font-size:13px;font-weight:700;font-family:'Barlow Condensed',sans-serif;">✦</span>
+          <div class="ai-panel-title">Odds de Campeão</div>
+        </div>
+        <div class="ai-panel-body">
+          <div style="font-size:11px;color:#7a8299;margin-bottom:10px;letter-spacing:0.5px;">Probabilidade estimada pela IA</div>
+          <div class="winner-odds-card" style="background:#13161e;border:none;padding:0;">
+            <div class="wo-row">
+              <div class="wo-team"><div class="tlogo" style="background:#1e1e10;width:24px;height:24px;font-size:9px;">VITA</div><div class="wo-tname">Vitality</div></div>
+              <div class="wo-bar-wrap"><div class="wo-bar" style="width:42%;background:#e8a838;"></div></div>
+              <div class="wo-pct">42%</div>
+            </div>
+            <div class="wo-row">
+              <div class="wo-team"><div class="tlogo" style="background:#1e1e2e;width:24px;height:24px;font-size:9px;">FAL</div><div class="wo-tname">Falcons</div></div>
+              <div class="wo-bar-wrap"><div class="wo-bar" style="width:22%;background:#4a9eff;"></div></div>
+              <div class="wo-pct" style="color:#4a9eff">22%</div>
+            </div>
+            <div class="wo-row">
+              <div class="wo-team"><div class="tlogo" style="background:#1a130d;width:24px;height:24px;font-size:9px;">FUR</div><div class="wo-tname">FURIA 🇧🇷</div></div>
+              <div class="wo-bar-wrap"><div class="wo-bar" style="width:18%;background:#3ecf74;"></div></div>
+              <div class="wo-pct" style="color:#3ecf74">18%</div>
+            </div>
+            <div class="wo-row">
+              <div class="wo-team"><div class="tlogo" style="background:#1a1e3a;width:24px;height:24px;font-size:9px;">SPT</div><div class="wo-tname">Spirit</div></div>
+              <div class="wo-bar-wrap"><div class="wo-bar" style="width:12%;background:#9a8aff;"></div></div>
+              <div class="wo-pct" style="color:#9a8aff">12%</div>
+            </div>
+            <div class="wo-row">
+              <div class="wo-team"><div class="tlogo" style="background:#1a2a1e;width:24px;height:24px;font-size:9px;">NV</div><div class="wo-tname">NaVi</div></div>
+              <div class="wo-bar-wrap"><div class="wo-bar" style="width:4%;background:#7a8299;"></div></div>
+              <div class="wo-pct" style="color:#7a8299">4%</div>
+            </div>
+            <div class="wo-row">
+              <div class="wo-team"><div class="tlogo" style="background:#1e1a3a;width:24px;height:24px;font-size:9px;">MZ</div><div class="wo-tname">MOUZ</div></div>
+              <div class="wo-bar-wrap"><div class="wo-bar" style="width:2%;background:#7a8299;"></div></div>
+              <div class="wo-pct" style="color:#7a8299">2%</div>
+            </div>
+          </div>
+          <div id="ai-analysis" style="margin-top:12px;">
+            <div class="loading-state"><span class="loading-spinner"></span> IA analisando...</div>
+          </div>
+          <button class="ask-btn" onclick="askAI()">Analisar Final com IA ↗</button>
+        </div>
+      </div>
+
+      <div class="section-hdr">Próximo torneio</div>
+      <div class="bracket-card">
+        <div class="bracket-title">BLAST Rivals Spring 2026</div>
+        <div class="bracket-match">
+          <span class="bm-team">Vitality vs FUT</span>
+          <span class="bm-odds">29 Abr</span>
+        </div>
+        <div class="bracket-match">
+          <span class="bm-team">Astralis vs G2</span>
+          <span class="bm-odds">29 Abr</span>
+        </div>
+        <div class="bracket-match">
+          <span class="bm-team">NaVi vs FaZe</span>
+          <span class="bm-odds">29 Abr</span>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:#7a8299;">Apenas Top 8 mundial · Odds em breve</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  async function loadAIAnalysis() {
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          messages: [{
+            role: "user",
+            content: `Você é um analista de CS2 (Counter-Strike 2) especializado. Com base nos dados reais do IEM Rio 2026 (acontecendo agora, 13-19 abril 2026):
+
+- Team Vitality é o #1 do mundo e busca seu 4º troféu consecutivo
+- Team Falcons surpreendeu Vitality 2-1 na fase de grupos (maior resultado do torneio)
+- FURIA dominou MOUZ 2-0 e joga em casa (Rio) com 15.000 fãs brasileiros
+- NaVi busca revanche após perder a final do BLAST Open Spring 2026 para Vitality
+- Team Spirit tem hally lesionado e pode ser afetado
+- MOUZ veio pelo lower bracket após derrota para Falcons
+
+Escreva uma análise CURTA (máximo 5 linhas) sobre quem deve ser campeão do IEM Rio 2026 e por quê. Use linguagem direta de analista esportivo. Em português. Não use bullet points.`
+          }]
+        })
+      });
+      const data = await res.json();
+      const txt = data.content?.[0]?.text || "Análise indisponível.";
+      document.getElementById("ai-analysis").innerHTML = `<div class="analysis-text">${txt}</div>`;
+    } catch(e) {
+      document.getElementById("ai-analysis").innerHTML = `<div class="analysis-text"><strong>Vitality</strong> parte como grande favorita, mas <strong>FURIA em casa</strong> é o curinga do torneio. Falcons já provou que pode surpreender qualquer um.</div>`;
+    }
+  }
+
+  function askAI() {
+    sendPrompt("Analise o IEM Rio 2026: quem tem mais chance de vencer o torneio? Considere que Falcons bateu Vitality nos grupos, FURIA joga em casa com torcida, e NaVi quer revanche. Dê odds estimadas para cada time finalista.");
+  }
+
+  loadAIAnalysis();
+</script>
